@@ -23,7 +23,7 @@ sap.ui.define([
                 Telefone: "",
                 Nascimento: "",
                 Admissao: "",
-                Cargo: "",
+                Cargo: "1",
                 Salario: "",
                 Moeda: "",
                 Login: ""
@@ -68,9 +68,9 @@ sap.ui.define([
 
             if(oData.ID){
                 oODataModel.update(`/ZIRH_ZCOFFEE('${oData.ID}')`, {
-                    Nome: oData.Nome,
+                    Nome: oData.Nome.trim(),
                     CPF: oData.CPF,
-                    Email: oData.Email,
+                    Email: oData.Email.trim(),
                     Telefone: oData.Telefone,
                     Nascimento: oDate,
                     Cargo: oData.Cargo,
@@ -94,9 +94,9 @@ sap.ui.define([
             }
 
            oODataModel.create("/ZIRH_ZCOFFEE", {
-                Nome: oData.Nome,
+                Nome: oData.Nome.trim(),
                 CPF: oData.CPF,
-                Email: oData.Email,
+                Email: oData.Email.trim(),
                 Telefone: oData.Telefone,
                 Nascimento: oDate,
                 Cargo: oData.Cargo,
@@ -128,7 +128,7 @@ sap.ui.define([
                 Telefone: "",
                 Nascimento: "",
                 Admissao: "",
-                Cargo: "",
+                Cargo: "1",
                 Salario: "",
                 Moeda: "",
                 Login: ""
@@ -140,6 +140,40 @@ sap.ui.define([
             const oRouter = UIComponent.getRouterFor(this);
 
             oRouter.navTo("RouteRH");
+        },
+
+        onSalarioChange: function (oEvent) {
+            const oInput = oEvent.getSource();
+            const sValue = oEvent.getParameter("value");
+
+            const sDigits = sValue.replace(/\D/g, "");
+
+            if (!sDigits) {
+                oInput.setValue("");
+                this._atualizarModelo(0);
+                return;
+            }
+
+            const fAmount = parseFloat(sDigits) / 100;
+
+            const oFloatFormat = sap.ui.core.format.NumberFormat.getFloatInstance({
+                groupingEnabled: true,
+                groupingSeparator: ".",
+                decimalSeparator: ",",
+                minFractionDigits: 2,
+                maxFractionDigits: 2
+            });
+
+            const sFormattedValue = oFloatFormat.format(fAmount);
+            oInput.setValue(sFormattedValue);
+
+            this._atualizarModelo(fAmount.toFixed(2)); 
+        },
+
+        _atualizarModelo: function (sValorFinal) {
+            const oModel = this.getView().getModel("funcionario");
+
+            oModel.setProperty("/Salario", sValorFinal);
         }
 
     });

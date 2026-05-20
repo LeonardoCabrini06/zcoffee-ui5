@@ -116,15 +116,14 @@
                                         <DatePicker
                                             id="dp1"
                                             value="{
-                                                path: 'funcionario>/Nascimento', 
-                                                type: 'sap.ui.model.odata.type.DateTime', 
+                                                path: 'funcionario>/Nascimento',
+                                                type: 'sap.ui.model.odata.type.DateTime',
                                                 formatOptions: { pattern: 'dd/MM/yyyy', strictParsing: true },
                                                 constraints: { displayFormat: 'Date' }
                                             }"
                                             placeholder="DD/MM/AAAA"/>
                                     </f:fields>
-                                </f:FormElement>
-
+                                </f:FormElement> 
                             </f:formElements>
                         </f:FormContainer>
 
@@ -164,7 +163,14 @@
 
                                 <f:FormElement label="Remuneração">
                                     <f:fields>
-                                        <Input value="{funcionario>/Salario}" type="Number" description="BRL" fieldWidth="70%" />
+                                        <Input 
+                                            id="idSalario"
+                                            value="{funcionario>/Salario}" 
+                                            type="Text" 
+                                            description="BRL" 
+                                            fieldWidth="70%" 
+                                            liveChange=".onSalarioChange" 
+                                            placeholder="0,00" />
                                     </f:fields>
                                 </f:FormElement>
 

@@ -116,10 +116,10 @@
                                         <DatePicker
                                             id="dp1"
                                             value="{
-                                                path: 'funcionario>/Nascimento',
-                                                type: 'sap.ui.model.odata.type.DateTime',
-                                                formatOptions: { pattern: 'dd/MM/yyyy', strictParsing: true },
-                                                constraints: { displayFormat: 'Date' }
+                                                'path': 'funcionario>/Nascimento',
+                                                'type': 'sap.ui.model.odata.type.DateTime',
+                                                'formatOptions': { 'pattern': 'dd/MM/yyyy', 'strictParsing': true },
+                                                'constraints': { 'displayFormat': 'Date' }
                                             }"
                                             placeholder="DD/MM/AAAA"/>
                                     </f:fields>

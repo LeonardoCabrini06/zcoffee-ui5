@@ -2,191 +2,129 @@
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:core="sap.ui.core"
-    xmlns:fb="sap.ui.comp.filterbar"
-    xmlns:layout="sap.ui.layout">
+    xmlns:viz="sap.viz.ui5.controls"
+    xmlns:viz.data="sap.viz.ui5.data"
+    xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds">
 
-    <Page id="page_RH" title="{i18n>title}">
+    <Page id="page_RH" title="{i18n>title}" backgroundDesign="List">
+        <content>
+            <HBox alignItems="Start" class="sapUiMediumMargin">
+                
+                <VBox width="60%" 
+                    height="250px" 
+                    class="sapUiStyleBoxShadow sapUiContentPadding sapUiMediumMarginEnd" 
+                    >
+                    <Panel
+                        headerText="Funcionários por Cargo"
+                        class="sapUiMediumMarginTop">
 
-        <VBox
-            width="100%"
-            alignItems="Center"
-            justifyContent="Start"
-            class="sapUiMediumMarginTop">
+                        <viz:VizFrame
+                            id="idVizFrame"
+                            vizType="donut"
+                            width="100%"
+                            height="500px"
+                            >
 
-            <Table
-                id="TableRH"
-                items="{/ZIRH_ZCOFFEE}"
-                mode="Delete"
-                delete="onDelete"
-                width="90%"
-                inset="false"
-                autoPopinMode="true"
-                class="sapUiResponsiveMargin">
+                        </viz:VizFrame>
 
-               <headerToolbar>
-                    <OverflowToolbar>
+                    </Panel>
+                </VBox>
 
-                        <Title text="Funcionários" />
+                <VBox width="40%">
+                    <GenericTile header="Funcionários" 
+                        width="100%" 
+                        class="sapUiTinyMarginBottom"
+                        >
+                        <TileContent>
+                            <NumericContent value="{dashboard>/totalFuncionarios}" icon="sap-icon://group"/>
+                        </TileContent>
+                    </GenericTile>
 
-                        <ToolbarSpacer />
+                    <GenericTile header="Ativos" width="100%" class="sapUiTinyMarginBottom">
+                        <TileContent>
+                            <NumericContent value="{dashboard>/ativos}" icon="sap-icon://sys-enter-2" valueColor="Good"/>
+                        </TileContent>
+                    </GenericTile>
 
-                        <SearchField
-                            id="searchFuncionario"
-                            width="15rem"
-                            placeholder="Buscar funcionário"
-                            liveChange="onFilterToolbar" 
-                            value="{filter>/Nome}"
-                            />
+                    <GenericTile header="Folha Salarial" width="100%" class="sapUiTinyMarginBottom">
+                        <TileContent>
+                            <NumericContent
+                                value="{dashboard>/folhaSalarial}"
+                                scale="Mil"/>
+                        </TileContent>
+                    </GenericTile>
+                </VBox>
+            </HBox>
 
-                        <MultiComboBox
-                            id="mcCargo"
-                            width="12rem"
-                            selectedKeys="{filter>/Cargo}"
-                            placeholder="Cargo"
-                            selectionFinish="onFilterToolbar">
+            <VBox class="sapUiMediumMargin">
+                <Table
+                    id="TableRH"
+                    items="{/ZIRH_ZCOFFEE}"
+                    itemPress="onDetailFuncionario"
+                    mode="Delete"
+                    delete="onDelete"
+                    width="100%"
+                    class="sapUiStyleBoxShadow">
 
-                            <items>
-                                <core:Item key="1" text="Barista" />
-                                <core:Item key="2" text="Caixa" />
-                                <core:Item key="3" text="Gerente" />
-                                <core:Item key="4" text="Supervisor" />
-                                <core:Item key="5" text="Garçom" />
-                                <core:Item key="6" text="Cozinheiro" />
-                            </items>
+                    <headerToolbar>
+                        <OverflowToolbar>
+                            <Title text="Funcionários" />
+                            <ToolbarSpacer />
+                            
+                            <SearchField id="searchFuncionario" width="12rem" placeholder="Buscar..." liveChange="onFilterToolbar" value="{filter>/Nome}" />
+                            
+                            <MultiComboBox id="mcCargo" width="10rem" placeholder="Cargo" selectedKeys="{filter>/Cargo}" selectionFinish="onFilterToolbar">
+                                <items>
+                                    <core:Item key="1" text="Barista" /><core:Item key="2" text="Caixa" />
+                                    <core:Item key="3" text="Gerente" /><core:Item key="4" text="Supervisor" />
+                                    <core:Item key="5" text="Garçom" /><core:Item key="6" text="Cozinheiro" />
+                                </items>
+                            </MultiComboBox>
 
-                        </MultiComboBox>
+                            <MultiComboBox id="mcStatus" width="10rem" placeholder="Status" selectedKeys="{filter>/Status}" selectionFinish="onFilterToolbar">
+                                <items>
+                                    <core:Item key="A" text="Ativo" />
+                                    <core:Item key="I" text="Inativo" />
+                                </items>
+                            </MultiComboBox>
 
-                        <MultiComboBox
-                            id="mcStatus"
-                            width="12rem"
-                            placeholder="Status"
-                            selectedKeys="{filter>/Status}"
-                            selectionFinish="onFilterToolbar">
+                            <DateRangeSelection id="drsAdmissao" width="12rem" dateValue="{filter>/dataInicio}" secondDateValue="{filter>/dataFim}" displayFormat="dd/MM/yyyy" change="onFilterToolbar" />
 
-                            <items>
-                                <core:Item key="A" text="Ativo" />
-                                <core:Item key="I" text="Inativo" />
-                            </items>
+                            <Button icon="sap-icon://clear-filter" press="onClearFilters" />
+                            <Button icon="sap-icon://refresh" press="onRefresh" />
+                            <Button text="Novo Funcionário" icon="sap-icon://add" type="Emphasized" press="onNovoFuncionario" />
+                        </OverflowToolbar>
+                    </headerToolbar>
 
-                        </MultiComboBox>
+                    <columns>
+                        <Column width="5rem"><Text text="ID"/></Column>
+                        <Column><Text text="Nome"/></Column>
+                        <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Email/CPF"/></Column>
+                        <Column><Text text="Cargo"/></Column>
+                        <Column hAlign="End"><Text text="Salário"/></Column>
+                        <Column hAlign="Center"><Text text="Status"/></Column>
+                    </columns>
 
-                        <DateRangeSelection
-                            id="drsAdmissao"
-                            dateValue="{filter>/dataInicio}"
-                            secondDateValue="{filter>/dataFim}"
-                            width="14rem"
-                            displayFormat="dd/MM/yyyy"
-                            change="onFilterToolbar" />
-
-                        <Button
-                            icon="sap-icon://clear-filter"
-                            tooltip="Limpar filtros"
-                            press="onClearFilters" />
-
-                        <Button
-                            icon="sap-icon://refresh"
-                            tooltip="Atualizar"
-                            press="onRefresh" />
-
-                        <Button
-                            text="Novo Funcionário"
-                            icon="sap-icon://add"
-                            type="Emphasized"
-                            press="onNovoFuncionario" />
-
-                    </OverflowToolbar>
-
-                </headerToolbar>
-
-                <columns>
-                    <Column>
-                        <Text text="ID"></Text>
-                    </Column>
-                    <Column>
-                        <Text text="Nome"></Text>
-                    </Column>
-                    <Column>
-                        <Text text="CPF"></Text>
-                    </Column>
-                    <Column>
-                        <Text text="Email"></Text>
-                    </Column>
-                    <Column>
-                        <Text text="Telefone"></Text>
-                    </Column>
-                    <Column>
-                        <Text text="Nascimento"></Text>
-                    </Column>
-                    <Column>
-                        <Text text="Admissao"></Text>
-                    </Column>
-                    <Column>
-                        <Text text="Cargo"></Text>
-                    </Column>
-                    <Column>
-                        <Text text="Salario"></Text>
-                    </Column>
-                    <Column>
-                        <Text text="Status"></Text>
-                    </Column>
-                    <Column>
-                        <Text text="Login"></Text>
-                    </Column>
-                </columns>
-                <items>
-                    <ColumnListItem type="Detail" detailPress="onEditFuncionario">
-                        <cells>
-                            <ObjectIdentifier title="{ID}"></ObjectIdentifier>
-                            <Text text="{Nome}"></Text>
-
-                            <Text text="{CPF}"></Text>
-                            <Text text="{Email}"></Text>
-                            <Text text="{Telefone}"></Text>
-
-                            <Text text="{
-                                path: 'Nascimento',
-                                type: 'sap.ui.model.odata.type.DateTime',
-                                formatOptions: {
-                                    UTC: false,
-                                    pattern: 'dd/MM/yyyy'
-                                }
-                            }" />
-
-                            <Text text="{
-                                path: 'Admissao',
-                                type: 'sap.ui.model.type.DateTime',
-                                formatOptions: {
-                                    UTC: false,
-                                    pattern: 'dd/MM/yyyy'
-                                }
-                            }" />
-
-                            <Text text="{
-                                path: 'Cargo',
-                                formatter: '.formatter.formatCargo'
-                            }" />
-
-                            <ObjectNumber
-                                number="{Salario}"
-                                unit="{Moeda}" />
-
-                           <ObjectStatus 
-                                text="{
-                                    path: 'Status',
-                                    formatter: '.formatter.formatStatus'
-                                }"
-                                state="{
-                                    path: 'Status',
-                                    formatter: '.formatter.formatStatusState'
-                                }" />
-                                
-                            <Text text="{Login}"></Text>
-                        </cells>
-                    </ColumnListItem>
-                </items>
-        
-            </Table>
-        </VBox>
-
+                    <items>
+                        <ColumnListItem type="Detail" detailPress="onEditFuncionario">
+                            <cells>
+                                <Text text="{ID}"/>
+                                <ObjectIdentifier title="{Nome}" text="{Login}"/>
+                                <VBox>
+                                    <Text text="{Email}"/>
+                                    <Text text="{CPF}" />
+                                </VBox>
+                                <Text text="{path: 'Cargo', formatter: '.formatter.formatCargo'}" />
+                                <ObjectNumber number="{Salario}" unit="{Moeda}" />
+                                <ObjectStatus 
+                                    text="{path: 'Status', formatter: '.formatter.formatStatus'}"
+                                    state="{path: 'Status', formatter: '.formatter.formatStatusState'}"
+                                    inverted="true" />
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </VBox>
+        </content>
     </Page>
 </mvc:View>

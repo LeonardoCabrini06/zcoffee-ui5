@@ -125,6 +125,13 @@
           "target": [
             "TargetFormFuncionario"
           ]
+        },
+        {
+          "name": "RouteDetailFuncionario",
+          "pattern": "funcionarios/detail/{funcionarioId}",
+          "target": [
+            "TargetDetailFuncionario"
+          ]
         }
       ],
       "targets": {
@@ -140,6 +147,11 @@
         "TargetFormFuncionario": {
           "id": "ViewFormFuncionario",
           "name": "ViewFormFuncionario",
+          "transition": "slide"
+        },
+        "TargetDetailFuncionario": {
+          "id": "ViewDetailFuncionario",
+          "name": "ViewDetailFuncionario",
           "transition": "slide"
         }
       }

@@ -5,8 +5,20 @@ sap.ui.define([
     "sap/ui/model/FilterOperator",
     "zcoffee/model/formatter",
     "sap/m/MessageToast",
-    "sap/ui/model/json/JSONModel"
-], (Controller, UIComponent, Filter, FilterOperator, formatter, MessageToast, JSONModel) => {
+    "sap/ui/model/json/JSONModel",
+    "sap/viz/ui5/data/FlattenedDataset",
+    "sap/viz/ui5/controls/common/feeds/FeedItem",
+    "sap/viz/ui5/controls/VizFrame",
+], (Controller, 
+    UIComponent, 
+    Filter, 
+    FilterOperator, 
+    formatter, 
+    MessageToast, 
+    JSONModel, 
+    FlattenedDataset, 
+    FeedItem,
+    VizFrame) => {
     "use strict";
 
     return Controller.extend("zcoffee.controller.ViewRH", {
@@ -32,6 +44,8 @@ sap.ui.define([
         _onRouteMatched:function(oEvent){
 
             this.onFilterToolbar(); // Aplica os filtros ao entrar na rota
+            this._loadKPIs();   // Carrega os KPIs atualizados
+            this._loadGrafico(); // Carrega o gráfico atualizado
         },
 
         onFilterToolbar:function(oEvent){
@@ -53,8 +67,14 @@ sap.ui.define([
                 aFilters.push(new Filter({ filters: aStatusFilters, and: false }));
             }
 
-            if (oFilterData.dataInicio && oFilterData.dataFim) {
-                // A implementar
+             if (oFilterData.dataInicio && oFilterData.dataFim) {
+
+                const sDataInicio = oFilterData.dataInicio.toISOString().split("T")[0];
+
+                const sDataFim = oFilterData.dataFim.toISOString().split("T")[0];
+
+                aFilters.push(new Filter("Admissao", FilterOperator.BT, sDataInicio, sDataFim));
+
             }
 
             // Aplica o array de filtros no binding da tabela
@@ -150,6 +170,143 @@ sap.ui.define([
                     this.getView().setBusy(false);
                 }
             });
+        },
+
+        onDetailFuncionario:function(oEvent){
+
+            const sId = oEvent
+            .getParameter("listItem")
+            .getBindingContext()
+            .getPath()
+            .split("'")[1];
+
+            const oRouter = UIComponent.getRouterFor(this);
+            oRouter.navTo("RouteDetailFuncionario", {
+                funcionarioId: sId
+            });
+
+        },
+
+        _loadKPIs:function(){
+
+            const oModel = this.getView().getModel();
+
+            oModel.read("/ZIRH_ZCOFFEE",{
+
+                success:function(oData){
+                    const aFuncionarios = oData.results;
+                    const iTotal = aFuncionarios.length;
+
+                    const iAtivos = aFuncionarios.filter(f => f.Status === "A").length;
+
+                    const fFolha = aFuncionarios.reduce((total, item) => {
+
+                        return total + parseFloat(item.Salario || 0);
+
+                    }, 0);
+
+                    const oDashBoard = {
+                        totalFuncionarios: iTotal,
+                        ativos: iAtivos,
+                        folhaSalarial: (fFolha / 1000).toFixed(2)
+                    };
+
+                    const oJson = new JSONModel(oDashBoard);
+
+                    this.getView().setModel(oJson, "dashboard");
+
+                }.bind(this),
+
+                error:function(oError){
+                    sap.m.MessageToast.show("Erro ao carregar dados do funcionário.");
+                }.bind(this)
+            })
+        },
+
+        _loadGrafico:function(){
+
+            const oModel = this.getView().getModel();
+
+            oModel.read("/ZIRH_ZCOFFEE",{
+
+                success:function(oData){
+
+                    const aFuncionarios = oData.results;
+
+                    const oCargos = {};
+
+                    aFuncionarios.forEach((item)=>{
+                        if(!oCargos[item.Cargo]){
+                            oCargos[item.Cargo] = 0;
+                        }
+                        oCargos[item.Cargo]++;
+                    });
+
+                    const aGrafico = Object.keys(oCargos).map((cargo)=>{
+                        return {
+                            Cargo: this.formatter.formatCargo(cargo),
+                            Quantidade: oCargos[cargo]
+                        };
+                    });
+
+                    const oJson = new JSONModel({
+                        dados: aGrafico
+                    });
+                    
+                    const oVizFrame = this.byId("idVizFrame");
+
+                    oVizFrame.setModel(oJson);
+
+                    oVizFrame.setDataset(
+                        new FlattenedDataset({
+                            dimensions: [
+                                {
+                                    name: "Cargo",
+                                    value: "{Cargo}"
+                                }
+                            ],
+                            measures: [
+                                {
+                                    name: "Quantidade",
+                                    value: "{Quantidade}"
+                                }
+                            ],
+                            data: {
+                                path: "/dados"
+                            }
+                        })
+
+                    );
+
+                    oVizFrame.destroyFeeds();
+
+                    oVizFrame.addFeed(
+                        new FeedItem({
+                            uid: "size",
+                            type: "Measure",
+                            values: ["Quantidade"]
+
+                        })
+                    );
+
+                    oVizFrame.addFeed(
+                        new FeedItem({
+
+                            uid: "color",
+                            type: "Dimension",
+                            values: ["Cargo"]
+
+                        })
+                    );
+
+                }.bind(this),
+
+                error:function(oError){
+                    sap.m.MessageToast.show("Erro ao carregar dados do funcionário.");
+                }.bind(this)
+
+            });
+
         }
     });
 });

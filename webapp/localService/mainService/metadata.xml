@@ -32,13 +32,26 @@
     </edmx:Reference>
     <edmx:DataServices m:DataServiceVersion="2.0">
         <Schema Namespace="ZCOFFEE_SRV" xml:lang="pt" sap:schema-version="1" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+            <EntityType Name="ZCDS_HIST_SALARIOType" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Id"/>
+                </Key>
+                <Property Name="Id" Type="Edm.String" Nullable="false" MaxLength="6" sap:display-format="NonNegative"/>
+                <Property Name="FuncionarioId" Type="Edm.String" MaxLength="6" sap:display-format="NonNegative"/>
+                <Property Name="SalarioAntigo" Type="Edm.Decimal" Precision="16" Scale="3"/>
+                <Property Name="SalarioNovo" Type="Edm.Decimal" Precision="16" Scale="3"/>
+                <Property Name="Moeda" Type="Edm.String" MaxLength="5" sap:display-format="UpperCase" sap:label="Moeda" sap:quickinfo="Código da moeda" sap:semantics="currency-code"/>
+                <Property Name="DataAlteracao" Type="Edm.DateTime" Precision="0" sap:display-format="Date"/>
+                <Property Name="HoraAlteracao" Type="Edm.Time" Precision="0"/>
+                <Property Name="Usuario" Type="Edm.String" MaxLength="12" sap:display-format="UpperCase" sap:label="Nome do usuário"/>
+            </EntityType>
             <EntityType Name="ZIRH_ZCOFFEEType" sap:content-version="1">
                 <Key>
                     <PropertyRef Name="ID"/>
                 </Key>
                 <Property Name="ID" Type="Edm.String" Nullable="false" MaxLength="6" sap:display-format="NonNegative" sap:label="Cod Func" sap:quickinfo="Código do funcionário"/>
                 <Property Name="Nome" Type="Edm.String" MaxLength="60" sap:label="Nome"/>
-                <Property Name="CPF" Type="Edm.String" MaxLength="11" sap:label="CPF"/>
+                <Property Name="CPF" Type="Edm.String" MaxLength="14" sap:label="CPF"/>
                 <Property Name="Email" Type="Edm.String" MaxLength="100" sap:label="Email"/>
                 <Property Name="Telefone" Type="Edm.String" MaxLength="20" sap:label="Telefone"/>
                 <Property Name="Nascimento" Type="Edm.DateTime" Precision="0" sap:display-format="Date" sap:label="Data de Nascimento"/>
@@ -50,6 +63,7 @@
                 <Property Name="Login" Type="Edm.String" MaxLength="15" sap:label="Login"/>
             </EntityType>
             <EntityContainer Name="ZCOFFEE_SRV_Entities" m:IsDefaultEntityContainer="true" sap:message-scope-supported="true" sap:supported-formats="atom json xlsx">
+                <EntitySet Name="ZCDS_HIST_SALARIO" EntityType="ZCOFFEE_SRV.ZCDS_HIST_SALARIOType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
                 <EntitySet Name="ZIRH_ZCOFFEE" EntityType="ZCOFFEE_SRV.ZIRH_ZCOFFEEType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
             </EntityContainer>
             <Annotation Term="Core.SchemaVersion" String="1.0.0" xmlns="http://docs.oasis-open.org/odata/ns/edm"/>

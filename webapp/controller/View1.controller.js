@@ -14,6 +14,13 @@ sap.ui.define([
             const router = UIComponent.getRouterFor(this);
             router.navTo("RouteRH");
             
+        },
+
+        onNavToProducts:function(){
+
+            const router = UIComponent.getRouterFor(this);
+            router.navTo("RouteProducts");
+            
         }
     });
 });

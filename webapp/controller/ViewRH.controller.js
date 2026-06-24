@@ -115,8 +115,7 @@ sap.ui.define([
                 success:function(oData2,oResponse){
 
                     sap.m.MessageToast.show(`Funcionário excluído com sucesso! ID: ${sId}`);
-                    oODataModel.refresh()
-                    this.getView().setBusy(false);
+                    oDataModel.refresh();
                 }.bind(this),
 
                 error:function(oError){
@@ -223,90 +222,45 @@ sap.ui.define([
             })
         },
 
-        _loadGrafico:function(){
+       
+        _loadGrafico: function () {
 
             const oModel = this.getView().getModel();
 
-            oModel.read("/ZIRH_ZCOFFEE",{
+            oModel.read("/ZIRH_ZCOFFEE", {
 
-                success:function(oData){
-
-                    const aFuncionarios = oData.results;
+                success: function (oData) {
 
                     const oCargos = {};
 
-                    aFuncionarios.forEach((item)=>{
-                        if(!oCargos[item.Cargo]){
+                    oData.results.forEach(item => {
+
+                        if (!oCargos[item.Cargo]) {
                             oCargos[item.Cargo] = 0;
                         }
+
                         oCargos[item.Cargo]++;
                     });
 
-                    const aGrafico = Object.keys(oCargos).map((cargo)=>{
-                        return {
-                            Cargo: this.formatter.formatCargo(cargo),
-                            Quantidade: oCargos[cargo]
-                        };
-                    });
+                    const aGrafico = Object.keys(oCargos).map(cargo => ({
+                        cargo: this.formatter.formatCargo(cargo),
+                        quantidade: oCargos[cargo]
+                    }));
 
                     const oJson = new JSONModel({
-                        dados: aGrafico
+                        cargoChart: aGrafico
                     });
-                    
-                    const oVizFrame = this.byId("idVizFrame");
 
-                    oVizFrame.setModel(oJson);
+                    this.getView().setModel(oJson, "grafico");
 
-                    oVizFrame.setDataset(
-                        new FlattenedDataset({
-                            dimensions: [
-                                {
-                                    name: "Cargo",
-                                    value: "{Cargo}"
-                                }
-                            ],
-                            measures: [
-                                {
-                                    name: "Quantidade",
-                                    value: "{Quantidade}"
-                                }
-                            ],
-                            data: {
-                                path: "/dados"
-                            }
-                        })
-
-                    );
-
-                    oVizFrame.destroyFeeds();
-
-                    oVizFrame.addFeed(
-                        new FeedItem({
-                            uid: "size",
-                            type: "Measure",
-                            values: ["Quantidade"]
-
-                        })
-                    );
-
-                    oVizFrame.addFeed(
-                        new FeedItem({
-
-                            uid: "color",
-                            type: "Dimension",
-                            values: ["Cargo"]
-
-                        })
-                    );
-
-                }.bind(this),
-
-                error:function(oError){
-                    sap.m.MessageToast.show("Erro ao carregar dados do funcionário.");
                 }.bind(this)
 
             });
+        },
 
+        onNavBack:function(){
+            const oRouter = UIComponent.getRouterFor(this);
+            oRouter.navTo("RouteView1");
         }
     });
 });

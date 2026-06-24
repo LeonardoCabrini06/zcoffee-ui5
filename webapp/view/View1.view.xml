@@ -3,5 +3,6 @@
     xmlns="sap.m">
     <Page id="page" title="{i18n>title}">
         <Button text="Navegar para RH" press="onNavToRH"></Button>
+        <Button text="Navegar para Produtos" press="onNavToProducts"></Button>
     </Page>
 </mvc:View>

@@ -1,0 +1,168 @@
+<mvc:View
+    controllerName="zcoffee.controller.ViewFormProduct"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:core="sap.ui.core"
+    xmlns:unified="sap.ui.unified"
+>
+    <Page
+        id="page_FormProduct"
+        title="{i18n>formProductTitle}"
+    >
+        <VBox class="sapUiMediumMargin">
+            <f:SimpleForm
+                id="SimpleFormChangeProducts"
+                editable="true"
+                layout="ResponsiveGridLayout"
+                title="Formulário de Produto"
+                labelSpanXL="4"
+                labelSpanL="4"
+                labelSpanM="12"
+                labelSpanS="12"
+                adjustLabelSpan="false"
+                emptySpanXL="0"
+                emptySpanL="0"
+                emptySpanM="0"
+                emptySpanS="0"
+                columnsXL="2"
+                columnsL="2"
+                columnsM="1"
+                singleContainerFullSize="false"
+            >
+                <f:content>
+                    <core:Title text="Dados do Produto" />
+
+                    <Label text="ID/Nome" />
+                    <Input
+                        value="{formProduct>/IdProduto}"
+                        editable="false"
+                    />
+                    <Input value="{formProduct>/Nome}" />
+
+                    <Label text="Descrição" />
+                    <Input value="{formProduct>/Descricao}" />
+
+                    <Label text="Categoria/Status" />
+                    <Select
+                        id="s_category"
+                        selectedKey="1"
+                    >
+                        <items>
+                            <core:Item
+                                text="Bebida Quente"
+                                key="1"
+                            />
+                            <core:Item
+                                text="Bebida Fria"
+                                key="2"
+                            />
+                            <core:Item
+                                text="Salgado"
+                                key="3"
+                            />
+                            <core:Item
+                                text="Sobremesa"
+                                key="4"
+                            />
+                            <core:Item
+                                text="Entrada"
+                                key="5"
+                            />
+                        </items>
+                    </Select>
+                    <Select
+                        id="s_status"
+                        selectedKey="A"
+                        editable="false"
+                    >
+                        <items>
+                            <core:Item
+                                text="Ativo"
+                                key="A"
+                            />
+                            <core:Item
+                                text="Inativo"
+                                key="I"
+                            />
+                        </items>
+                    </Select>
+                    <core:Title text="Imagem do produto" />
+                    <VBox
+                        class="sapUiMediumMarginBottom"
+                        alignItems="Center"
+                    >
+                        <unified:FileUploader
+                            change=".onFileChange"
+                            fileType="jpg,jpeg,png"
+                        />
+                        <Image
+                            width="250px"
+                            src="{formProduct>/ImagemPreview}"
+                        />
+                    </VBox>
+                </f:content>
+            </f:SimpleForm>
+            <f:SimpleForm
+                id="SimpleFormChangeProducts2"
+                editable="true"
+                layout="ResponsiveGridLayout"
+                labelSpanXL="4"
+                labelSpanL="4"
+                labelSpanM="12"
+                labelSpanS="12"
+                adjustLabelSpan="false"
+                emptySpanXL="0"
+                emptySpanL="0"
+                emptySpanM="0"
+                emptySpanS="0"
+                columnsXL="2"
+                columnsL="2"
+                columnsM="1"
+                singleContainerFullSize="false"
+            >
+                <f:content>
+                    <core:Title text="Precificação e Estoque" />
+                    <Label text="Quantidade" />
+                    <Input
+                        value="{formProduct>/Quantidade}"
+                        type="Number"
+                        step="1"
+                    />
+                    <Label text="Preço/Moeda" />
+                    <Input
+                        value="{formProduct>/Preco}"
+                        type="Number"
+                    />
+
+                    <Select
+                        id="s_currency"
+                        selectedKey="BRL"
+                    >
+                        <items>
+                            <core:Item
+                                text="Real Brasileiro"
+                                key="BRL"
+                            />
+                            <core:Item
+                                text="Dólar Americano"
+                                key="USD"
+                            />
+                        </items>
+                        <layoutData>
+                            <l:GridData span="XL2 L4 M4 S4" />
+                        </layoutData>
+                    </Select>
+
+                    <Label text="Validade" />
+                    <DatePicker
+                        value="{formProduct>/Validade}"
+                        displayFormat="dd/MM/yyyy"
+                        valueFormat="yyyy-MM-dd"
+                    />
+                </f:content>
+            </f:SimpleForm>
+        </VBox>
+    </Page>
+</mvc:View>

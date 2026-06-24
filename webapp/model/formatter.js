@@ -28,6 +28,17 @@ sap.ui.define([], function () {
                 case "I": return "Error";   // Vermelho
                 default: return "None";
             }
+        },
+
+        formatCategoria: function (sCategoria) {
+            const oCategoria = {
+                "1": "Bebida Quente",
+                "2": "Bebida Fria",
+                "3": "Salgado",
+                "4": "Sobremesa",
+                "5": "Entrada"
+            };
+            return oCategoria[sCategoria] || sCategoria;
         }
     };
 });

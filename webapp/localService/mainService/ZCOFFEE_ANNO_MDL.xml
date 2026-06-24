@@ -25,6 +25,21 @@
         <edmx:Include Namespace="ZCOFFEE_SRV" Alias="SAP"/>
     </edmx:Reference>
     <edmx:DataServices>
-        <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm"/>
+        <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="ZCOFFEE_SRV">
+            <!-- Anotações para ZCDS_PRODUTOS -->
+            <Annotations Target="SAP.ZCDS_PRODUTOSType">
+                <!-- Campo Nome como filtro básico (SearchRestrictedProperties) -->
+                <Annotation Term="Common.SearchRestrictedProperties">
+                    <Collection>
+                        <PropertyPath>Nome</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            
+            <!-- Anotações para o campo Nome individualmente -->
+            <Annotations Target="SAP.ZCDS_PRODUTOSType/Nome">
+                <Annotation Term="Common.IsUpperCase" Bool="false"/>
+            </Annotations>
+        </Schema>
     </edmx:DataServices>
 </edmx:Edmx>

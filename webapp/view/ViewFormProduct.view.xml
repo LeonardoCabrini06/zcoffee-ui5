@@ -10,6 +10,8 @@
     <Page
         id="page_FormProduct"
         title="{i18n>formProductTitle}"
+        showNavButton="true"
+        navButtonPress="onNavBack"
     >
         <VBox class="sapUiMediumMargin">
             <f:SimpleForm
@@ -34,20 +36,22 @@
                 <f:content>
                     <core:Title text="Dados do Produto" />
 
-                    <Label text="ID/Nome" />
+                    <Label text="Código" />
                     <Input
                         value="{formProduct>/IdProduto}"
                         editable="false"
                     />
+
+                    <Label text="Nome" />
                     <Input value="{formProduct>/Nome}" />
 
                     <Label text="Descrição" />
                     <Input value="{formProduct>/Descricao}" />
 
-                    <Label text="Categoria/Status" />
+                    <Label text="Categoria" />
                     <Select
                         id="s_category"
-                        selectedKey="1"
+                        selectedKey="{formProduct>/Categoria}"
                     >
                         <items>
                             <core:Item
@@ -72,9 +76,10 @@
                             />
                         </items>
                     </Select>
+                    <Label text="Status" />
                     <Select
                         id="s_status"
-                        selectedKey="A"
+                        selectedKey="{formProduct>/Status}"
                         editable="false"
                     >
                         <items>
@@ -88,20 +93,6 @@
                             />
                         </items>
                     </Select>
-                    <core:Title text="Imagem do produto" />
-                    <VBox
-                        class="sapUiMediumMarginBottom"
-                        alignItems="Center"
-                    >
-                        <unified:FileUploader
-                            change=".onFileChange"
-                            fileType="jpg,jpeg,png"
-                        />
-                        <Image
-                            width="250px"
-                            src="{formProduct>/ImagemPreview}"
-                        />
-                    </VBox>
                 </f:content>
             </f:SimpleForm>
             <f:SimpleForm
@@ -125,20 +116,23 @@
                 <f:content>
                     <core:Title text="Precificação e Estoque" />
                     <Label text="Quantidade" />
-                    <Input
+                    <StepInput
                         value="{formProduct>/Quantidade}"
-                        type="Number"
+                        min="0"
                         step="1"
                     />
                     <Label text="Preço/Moeda" />
                     <Input
                         value="{formProduct>/Preco}"
                         type="Number"
+                        description="R$"
+                        liveChange=".onPriceChange" 
+                        placeholder="0,00" 
                     />
 
                     <Select
                         id="s_currency"
-                        selectedKey="BRL"
+                        selectedKey="{formProduct>/Moeda}"
                     >
                         <items>
                             <core:Item
@@ -160,9 +154,45 @@
                         value="{formProduct>/Validade}"
                         displayFormat="dd/MM/yyyy"
                         valueFormat="yyyy-MM-dd"
+                        id="dp_validade"
                     />
                 </f:content>
             </f:SimpleForm>
         </VBox>
+        <Panel
+                headerText="Preview da Imagem"
+                width="100%"
+            >
+                <content>
+                    <Input
+                        value="{formProduct>/ImagemURL}"
+                        placeholder="Cole a URL da imagem"
+                    />
+
+                    <Image
+                        src="{formProduct>/ImagemURL}"
+                        width="200px"
+                        height="200px"
+                        densityAware="false"
+                    />
+                </content>
+            </Panel>
+        <footer>
+            <Toolbar>
+                <ToolbarSpacer />
+
+                <Button
+                    text="Cancelar"
+                    type="Transparent"
+                    press="onNavBack"
+                />
+
+                <Button
+                    text="Salvar"
+                    type="Emphasized"
+                    press="onSave"
+                />
+            </Toolbar>
+        </footer>
     </Page>
 </mvc:View>

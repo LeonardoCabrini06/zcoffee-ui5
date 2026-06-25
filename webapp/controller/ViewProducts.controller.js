@@ -42,8 +42,6 @@ sap.ui.define(
         oRouter.navTo("RouteAddProduct");
       },
 
-      onEditButton: function () {},
-
       onProductEdit: function (oEvent) {
         const sProductID = oEvent
           .getSource()
@@ -51,7 +49,10 @@ sap.ui.define(
           .getPath()
           .split("'")[1];
 
-        MessageToast.show("Abrindo detalhes do produto: " + sProductID);
+        const oRouter = UIComponent.getRouterFor(this);
+        oRouter.navTo("RouteEditProduct", {
+          productId: sProductID,
+        });
       },
 
       onDeleteProduct: function (oEvent) {
@@ -61,21 +62,66 @@ sap.ui.define(
           .getPath()
           .split("'")[1];
 
+        this._verificarProduto(sProductID);
+      },
+
+      _verificarProduto: function (sProductID) {
+        const oModel = this.getView().getModel();
+
+        oModel.read("/ZCDS_PRODUTOS('" + sProductID + "')", {
+          success: (oData) => {
+            if (oData.Status === "I") {
+              MessageBox.error(
+                "O produto " + sProductID + " já está inativado.",
+              );
+
+              return;
+            }
+
+            this._confirmarInativacao(sProductID);
+          },
+
+          error: (oError) => {
+            console.error(oError);
+
+            MessageBox.error("Erro ao verificar status do produto.");
+          },
+        });
+      },
+
+      _confirmarInativacao: function (sProductID) {
         MessageBox.confirm(
-          "Tem certeza que deseja deletar o produto " + sProductID + "?",
+          "Tem certeza que deseja inativar o produto " + sProductID + "?",
           {
-            // Ações possíveis
             actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
 
-            onClose: function (sAction) {
-              if (sAction === MessageBox.Action.OK) {
-                MessageToast.show(
-                  "Produto " + sProductID + " deletado com sucesso!",
-                );
+            onClose: (sAction) => {
+              if (sAction !== MessageBox.Action.OK) {
+                return;
               }
+
+              this._inativarProduto(sProductID);
             },
           },
         );
+      },
+
+      _inativarProduto: function (sProductID) {
+        const oModel = this.getView().getModel();
+
+        oModel.remove("/ZCDS_PRODUTOS('" + sProductID + "')", {
+          success: () => {
+            MessageToast.show(
+              "Produto " + sProductID + " inativado com sucesso.",
+            );
+          },
+
+          error: (oError) => {
+            console.error(oError);
+
+            MessageBox.error("Erro ao inativar produto.");
+          },
+        });
       },
 
       onItemPress: function (oEvent) {

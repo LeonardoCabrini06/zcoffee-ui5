@@ -56,7 +56,7 @@
     "flexEnabled": true,
     "dependencies": {
       "minUI5Version": "1.120.23",
-       "libs": {
+      "libs": {
         "sap.m": {},
         "sap.ui.core": {}
       }
@@ -146,6 +146,13 @@
           "target": [
             "TargetNewProduct"
           ]
+        },
+        {
+          "name": "RouteEditProduct",
+          "pattern": "produtos/edit/{productId}",
+          "target": [
+            "TargetNewProduct"
+          ]
         }
       ],
       "targets": {
@@ -178,7 +185,6 @@
           "name": "ViewFormProduct",
           "transition": "slide"
         }
-        
       }
     },
     "rootView": {

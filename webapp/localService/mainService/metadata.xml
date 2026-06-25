@@ -55,7 +55,7 @@
                 <Property Name="Categoria" Type="Edm.String" MaxLength="30" sap:display-format="UpperCase" sap:label="Código da categoria" sap:quickinfo="Ex: Café, Doce, Salgado"/>
                 <Property Name="Preco" Type="Edm.Decimal" Precision="12" Scale="3" sap:label="Valor unitário"/>
                 <Property Name="Moeda" Type="Edm.String" MaxLength="5" sap:display-format="UpperCase" sap:label="Moeda" sap:semantics="currency-code"/>
-                <Property Name="Quantidade" Type="Edm.String" MaxLength="10" sap:display-format="NonNegative" sap:label="Quantidade disponíve" sap:quickinfo="Quantidade disponível"/>
+                <Property Name="Quantidade" Type="Edm.Int32"/>
                 <Property Name="Status" Type="Edm.String" MaxLength="1" sap:display-format="UpperCase" sap:label="Status"/>
                 <Property Name="Validade" Type="Edm.DateTime" Precision="0" sap:display-format="Date" sap:label="Data de validade" sap:quickinfo="Data de validade do produto"/>
                 <Property Name="ImagemURL" Type="Edm.String" MaxLength="100"/>
@@ -82,7 +82,7 @@
             </EntityType>
             <EntityContainer Name="ZCOFFEE_SRV_Entities" m:IsDefaultEntityContainer="true" sap:message-scope-supported="true" sap:supported-formats="atom json xlsx">
                 <EntitySet Name="ZCDS_HIST_SALARIO" EntityType="ZCOFFEE_SRV.ZCDS_HIST_SALARIOType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
-                <EntitySet Name="ZCDS_PRODUTOS" EntityType="ZCOFFEE_SRV.ZCDS_PRODUTOSType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+                <EntitySet Name="ZCDS_PRODUTOS" EntityType="ZCOFFEE_SRV.ZCDS_PRODUTOSType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
                 <EntitySet Name="ZIRH_ZCOFFEE" EntityType="ZCOFFEE_SRV.ZIRH_ZCOFFEEType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
             </EntityContainer>
             <Annotation Term="Core.SchemaVersion" String="1.0.0" xmlns="http://docs.oasis-open.org/odata/ns/edm"/>

@@ -6,7 +6,7 @@ sap.ui.define([
 ], (Controller, UIComponent, JSONModel, formatter) => {
     "use strict";
 
-    return Controller.extend("zcoffee.controller.ViewDetailFuncionario", {
+    return Controller.extend("zcoffee.controller.RH.ViewDetailFuncionario", {
 
         formatter: formatter,
 

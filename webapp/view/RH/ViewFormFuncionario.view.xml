@@ -1,5 +1,5 @@
 <mvc:View
-    controllerName="zcoffee.controller.ViewFormFuncionario"
+    controllerName="zcoffee.controller.RH.ViewFormFuncionario"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:core="sap.ui.core"

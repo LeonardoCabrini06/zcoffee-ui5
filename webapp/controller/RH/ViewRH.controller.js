@@ -21,7 +21,7 @@ sap.ui.define([
     VizFrame) => {
     "use strict";
 
-    return Controller.extend("zcoffee.controller.ViewRH", {
+    return Controller.extend("zcoffee.controller.RH.ViewRH", {
 
         formatter: formatter,
 

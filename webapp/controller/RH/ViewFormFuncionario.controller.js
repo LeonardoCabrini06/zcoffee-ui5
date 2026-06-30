@@ -5,7 +5,7 @@ sap.ui.define([
 ], (Controller, UIComponent, JSONModel) => {
     "use strict";
 
-    return Controller.extend("zcoffee.controller.ViewFormFuncionario", {
+    return Controller.extend("zcoffee.controller.RH.ViewFormFuncionario", {
         onInit() {
 
             const oRouter = UIComponent.getRouterFor(this);

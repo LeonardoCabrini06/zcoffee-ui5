@@ -9,12 +9,15 @@
     <Page
         id="page_Products"
         title="{i18n>Produtos}"
+        showNavButton="true"
+        navButtonPress="onNavBack"
     >
         <smartFilterBar:SmartFilterBar
             id="SF_products"
             persistencyKey="products"
             entitySet="ZCDS_PRODUTOS"
             enableBasicSearch="false"
+            initialise="onSmartFilterBarInitialise"
         >
             <smartFilterBar:controlConfiguration>
                 <smartFilterBar:ControlConfiguration
@@ -51,7 +54,6 @@
                     <smartFilterBar:customControl>
                         <MultiComboBox
                             id="mcb_category"
-                            selectionChange=".handleSelectionChange"
                         >
                             <core:Item
                                 id="IdItem1"
@@ -130,6 +132,7 @@
             editTogglable="false"
             initiallyVisibleFields="Nome"
             showFullScreenButton="true"
+            beforeRebindTable="onBeforeRebindTable"
         >
             <smartTable:customToolbar>
                 <OverflowToolbar

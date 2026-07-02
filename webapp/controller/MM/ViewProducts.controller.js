@@ -1,13 +1,26 @@
 sap.ui.define(
   [
     "sap/ui/core/mvc/Controller",
-    "sap/ui/core/UIComponent",
     "zcoffee/model/formatter",
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator",
     "sap/ui/core/routing/History",
+    "sap/ui/core/Fragment",
+    "sap/ui/model/json/JSONModel",
+    "sap/m/MessageToast",
+    "sap/m/MessageBox"
   ],
-  (Controller, UIComponent, formatter, Filter, FilterOperator, History) => {
+  (
+    Controller,
+    formatter,
+    Filter,
+    FilterOperator,
+    History,
+    Fragment,
+    JSONModel,
+    MessageToast,
+    MessageBox
+  ) => {
     "use strict";
 
     return Controller.extend("zcoffee.controller.MM.ViewProducts", {
@@ -16,6 +29,9 @@ sap.ui.define(
       onInit() {
         this._oCustomStatus = this.byId("mcb_status");
         this._oCustomCategory = this.byId("mcb_category");
+        this._oSmartTableProducts = this.byId("ProductsSmartTable")
+
+        this.getView().setModel(new JSONModel(this._getCreateProductInitialData()), "createProduct");
 
         this.getOwnerComponent()
           .getRouter()
@@ -26,8 +42,15 @@ sap.ui.define(
       onMatched: function () {
         const dir = History.getInstance().getDirection();
         if (dir === "Backwards") {
-          this.byId("ProductsSmartTable").rebindTable();
+          this._oSmartTableProducts.rebindTable();
         }
+      },
+
+      onResetFilter:function(){
+        this._oCustomStatus.setSelectedKeys(["A"]);
+        this._oCustomCategory.setSelectedKeys([]);
+
+        this._oSmartTableProducts.rebindTable();
       },
 
       onNavBack: function () {
@@ -91,6 +114,148 @@ sap.ui.define(
           );
         }
       },
+
+      onAddProduct: function () {
+        this.onOpenCreateDialog();
+      },
+
+      onOpenCreateDialog: function () {
+
+        this._resetCreateProductModel()
+
+        if (!this._pCreateDialog) {
+
+          this._pCreateDialog = Fragment.load({
+
+            id: this.getView().getId(),
+            name: "zcoffee.view.fragments.AddProduct",
+            controller: this,
+          }).then((oDialog) => {
+
+            this.getView().addDependent(oDialog);
+            return oDialog;
+          });
+        }
+
+        this._pCreateDialog.then((oDialog) => {
+
+          oDialog.open();
+        });
+      },
+
+      onSaveProduct: function(){
+
+        const oDataModel = this.getView().getModel(); 
+        const oPayload = this._montaPayload();
+
+        if(!this._validarCampos(oPayload)){
+          return;
+        }
+
+        console.log(oPayload);
+        
+        oDataModel.create("/ZCDS_PRODUTOS", oPayload,{
+
+          success:function(oDataNew){
+
+            MessageBox.success(`Produto ${oDataNew.IdProduto} criado com sucesso!`)
+
+            this._resetCreateProductModel();
+            this.byId("createProductDialog").close();
+            this._oSmartTableProducts.rebindTable();
+
+          }.bind(this),
+
+          error:function(oError){
+
+            console.log(oError);
+            MessageBox.error("Falha ao criar Produto!");
+          }
+
+        })
+
+      },
+
+      _montaPayload:function(){
+
+        const oData = this.getView().getModel("createProduct").getData();
+        const oDatePicker = this.byId("dp2").getDateValue();
+
+        return {
+          Nome: oData.Nome,
+          Descricao: oData.Descricao,
+          Categoria: oData.Categoria,
+          Preco: parseFloat(oData.Preco).toFixed(3),
+          Moeda: oData.Moeda,
+          Quantidade: oData.Quantidade,
+          Status: oData.Status,
+          Validade: oDatePicker,
+          ImagemURL: oData.ImagemURL
+        }
+
+      },
+
+      _validarCampos:function(oData){
+
+        if (!oData.Nome) {
+
+          MessageToast.show("Preencha o corretamente o Nome!");
+          return false;
+        }
+
+        if (!oData.Preco || oData.Preco <= 0) {
+
+          MessageToast.show("Preencha corretamente o Preço!");
+          return false;
+        }
+
+        if (oData.Quantidade < 0) {
+
+          MessageBox.error("Quantidade inválida.");
+          return false;
+        }
+
+        if (!oData.Validade) {
+
+          MessageBox.error("Data de Validade inválida.");
+          return false;
+        }
+
+        return true;
+      },
+
+      onCloseDialog: function () {
+        this._resetCreateProductModel();
+        this.byId("createProductDialog").close();
+    },
+
+    _getCreateProductInitialData:function(){
+
+      return {
+        Categoria:"1",
+        Status:"A",
+        Moeda:"BRL",
+        Quantidade:1
+      }
+    },
+
+    _resetCreateProductModel:function(){
+      this.getView().getModel("createProduct").setData(this._getCreateProductInitialData())
+    },
+
+    onPrecoChange: function (oEvent) {
+
+      const oInput = oEvent.getSource();
+      let sValue = oInput.getValue();
+
+      sValue = parseFloat(sValue.replace(",", "."));
+
+      if (!isNaN(sValue)) {
+          oInput.setValue(sValue.toFixed(2));
+      }
+
+    }
+
     });
   },
 );

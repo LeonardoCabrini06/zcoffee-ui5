@@ -146,6 +146,12 @@
                         press="onAddProduct"
                         text="Adicionar"
                     />
+                    <OverflowToolbarButton
+                        id="btReset"
+                        icon="sap-icon://reset"
+                        press="onResetFilter"
+                        text=""
+                    />
                 </OverflowToolbar>
             </smartTable:customToolbar>
             <Table

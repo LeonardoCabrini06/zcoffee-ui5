@@ -1,0 +1,143 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.ui.layout.form"
+>
+    <Dialog
+        id="createProductDialog"
+        title="Novo Produto"
+        contentWidth="700px"
+    >
+        <content>
+            <f:SimpleForm
+                editable="true"
+                layout="ColumnLayout"
+                title="Criar Produto"
+                columnsM="2"
+                columnsL="2"
+                columnsXL="2"
+            >
+                <f:content>
+                    <core:Title text="Informações do Produto" />
+
+                    <Label text="Nome" />
+                    <Input
+                        value="{createProduct>/Nome}"
+                        required="true"
+                        maxLength="60"
+                    />
+
+                    <Label text="Descrição" />
+                    <Input
+                        value="{createProduct>/Descricao}"
+                        maxLength="100"
+                    />
+
+                    <Label text="Categoria" />
+                    <Select
+                        enabled="true"
+                        editable="true"
+                        selectedKey="{createProduct>/Categoria}"
+                    >
+                        <core:Item
+                            key="1"
+                            text="Bebida Quente"
+                        />
+                        <core:Item
+                            key="2"
+                            text="Bebida Fria"
+                        />
+                        <core:Item
+                            key="3"
+                            text="Salgado"
+                        />
+                        <core:Item
+                            key="4"
+                            text="Sobremesa"
+                        />
+                        <core:Item
+                            key="5"
+                            text="Entrada"
+                        />
+                    </Select>
+
+                    <Label text="Preço/Moeda" />
+                    <Input
+                        type="Number"
+                        value="{createProduct>/Preco}"
+                        change="onPrecoChange"/>
+
+                    <Select
+                        enabled="true"
+                        editable="true"
+                        selectedKey="{createProduct>/Moeda}"
+                    >
+                        <layoutData>
+                            <f:ColumnElementData
+                                cellsSmall="4"
+                                cellsLarge="2"
+                            />
+                        </layoutData>
+                        <core:Item
+                            key="BRL"
+                            text="BRL"
+                        />
+                        <core:Item
+                            key="USD"
+                            text="USD"
+                        />
+                    </Select>
+
+                    <Label text="Quantidade" />
+                    <StepInput
+                        id="quantityStepInput"
+                        value="{createProduct>/Quantidade}"
+                        min="1"
+                        max="100"
+                        step="1"
+                        width="120px"
+                        textAlign="Center"
+                    />
+
+                    <Label text="Status" />
+                    <ObjectStatus
+                        class="sapUiSmallMarginBottom"
+                        text="Ativo"
+                        inverted="true"
+                        icon="sap-icon://sys-enter-2"
+                        state="Success"
+                    />
+
+                    <Label text="Data de Validade" />
+                    <DatePicker
+                        id="dp2"
+                        value="{createProduct>/Validade}"
+                        displayFormat="dd/MM/yyyy"
+                        valueFormat="yyyy-MM-dd"
+                    />
+
+                    <Label text="Imagem (URL)" />
+                    <Input
+                        value="{createProduct>/ImagemURL}"
+                        maxLength="100"
+                    />
+                </f:content>
+            </f:SimpleForm>
+        </content>
+
+        <beginButton>
+            <Button
+                text="Salvar"
+                type="Emphasized"
+                press="onSaveProduct"
+            />
+        </beginButton>
+
+        <endButton>
+            <Button
+                text="Cancelar"
+                press=".onCloseDialog"
+            />
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>
